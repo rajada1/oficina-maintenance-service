@@ -4,7 +4,6 @@ import br.com.grupo99.manutencao.application.dto.ManutencaoRequestDTO;
 import br.com.grupo99.manutencao.application.dto.ManutencaoResponseDTO;
 import br.com.grupo99.manutencao.application.exception.ResourceNotFoundException;
 import br.com.grupo99.manutencao.adapter.repository.ManutencaoRepository;
-import br.com.grupo99.manutencao.adapter.event.EventPublishingService;
 import br.com.grupo99.manutencao.domain.Manutencao;
 import br.com.grupo99.manutencao.domain.StatusManutencao;
 import br.com.grupo99.manutencao.domain.TipoManutencao;
@@ -23,7 +22,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ManutencaoApplicationService {
     private final ManutencaoRepository manuntencaoRepository;
-    private final EventPublishingService eventPublishingService;
 
     @Transactional
     public ManutencaoResponseDTO criar(ManutencaoRequestDTO requestDTO) {
@@ -38,7 +36,6 @@ public class ManutencaoApplicationService {
                 .build();
 
         Manutencao saved = manuntencaoRepository.save(manutencao);
-        eventPublishingService.publishManutencaoCriada(saved.getId().toString(), saved.getVeiculoId().toString());
 
         log.info("Manutenção criada com sucesso: {}", saved.getId());
         return ManutencaoResponseDTO.fromDomain(saved);
@@ -80,7 +77,6 @@ public class ManutencaoApplicationService {
         manutencao.setObservacoes(requestDTO.getObservacoes());
 
         Manutencao updated = manuntencaoRepository.save(manutencao);
-        eventPublishingService.publishManutencaoAtualizada(updated.getId().toString(), updated.getStatus().name());
 
         log.info("Manutenção atualizada com sucesso: {}", id);
         return ManutencaoResponseDTO.fromDomain(updated);
@@ -105,7 +101,6 @@ public class ManutencaoApplicationService {
         manutencao.setStatus(StatusManutencao.EM_EXECUCAO);
         Manutencao updated = manuntencaoRepository.save(manutencao);
 
-        eventPublishingService.publishManutencaoAtualizada(updated.getId().toString(), updated.getStatus().name());
         log.info("Manutenção iniciada com sucesso: {}", id);
         return ManutencaoResponseDTO.fromDomain(updated);
     }
@@ -120,7 +115,6 @@ public class ManutencaoApplicationService {
         manutencao.setDataConclusao(LocalDateTime.now());
         Manutencao updated = manuntencaoRepository.save(manutencao);
 
-        eventPublishingService.publishManutencaoConcluida(updated.getId().toString());
         log.info("Manutenção concluída com sucesso: {}", id);
         return ManutencaoResponseDTO.fromDomain(updated);
     }
