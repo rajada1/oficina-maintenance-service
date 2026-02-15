@@ -1,6 +1,5 @@
 package br.com.grupo99.manutencao.application.service;
 
-import br.com.grupo99.manutencao.adapter.event.EventPublishingService;
 import br.com.grupo99.manutencao.adapter.repository.ManutencaoRepository;
 import br.com.grupo99.manutencao.application.dto.ManutencaoRequestDTO;
 import br.com.grupo99.manutencao.application.dto.ManutencaoResponseDTO;
@@ -28,9 +27,6 @@ import static org.mockito.Mockito.*;
 class ManutencaoApplicationServiceTest {
     @Mock
     private ManutencaoRepository repository;
-
-    @Mock
-    private EventPublishingService eventPublishingService;
 
     @InjectMocks
     private ManutencaoApplicationService service;
@@ -72,7 +68,6 @@ class ManutencaoApplicationServiceTest {
         assertEquals(veiculoId, result.getVeiculoId());
         assertEquals("PREVENCAO", result.getTipoManutencao());
         verify(repository).save(any(Manutencao.class));
-        verify(eventPublishingService).publishManutencaoCriada(any(), any());
     }
 
     @Test
