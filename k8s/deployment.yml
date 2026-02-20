@@ -45,7 +45,7 @@ spec:
                 secretKeyRef:
                   name: maintenance-service-secrets
                   key: DB_PORT
-            - name: SPRING_DATASOURCE_DB
+            - name: DB_NAME
               valueFrom:
                 secretKeyRef:
                   name: maintenance-service-secrets
